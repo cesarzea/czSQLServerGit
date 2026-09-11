@@ -12,20 +12,20 @@ REM  save_one_object_changes.bat  <database> <schema> <object> ["login"]
 REM  Regenerates the script of ONE object and commits it to Git, authored
 REM  by the SQL Server login that made the change (if given).
 REM  Invoked asynchronously (Service Broker + xp_cmdshell) by the procedure
-REM  czSqlGit.dbo.RegisterChange every time the DDL trigger of a database
+REM  czSQLServerGit.dbo.RegisterChange every time the DDL trigger of a database
 REM  detects a schema change.
 REM ============================================================================
 
 REM ---- Configuration ---------------------------------------------------------
-SET REPO_DIR=C:\czSqlGit
+SET REPO_DIR=C:\czSQLServerGit
 SET SQL_SERVER=127.0.0.1
-SET SQL_USER=czsqlgit
+SET SQL_USER=czsqlservergit
 SET SQL_PASSWORD=<password>
 REM Full path to mssql-scripter.bat if the Python Scripts folder is not in PATH
 SET MSSQL_SCRIPTER=mssql-scripter
 SET GIT="C:\Program Files\Git\cmd\git.exe"
-SET GIT_USER_NAME=czSqlGit
-SET GIT_USER_EMAIL=czsqlgit@example.com
+SET GIT_USER_NAME=czSQLServerGit
+SET GIT_USER_EMAIL=czsqlservergit@example.com
 SET AUTHOR_DOMAIN=example.com
 SET LOG=save_one_object_changes.log
 REM ----------------------------------------------------------------------------

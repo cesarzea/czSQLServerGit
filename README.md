@@ -8,8 +8,6 @@ How many times have you overwritten or deleted code in SQL Server and needed to 
 
 czSQLServerGit records, on the server itself, every creation, modification and deletion of objects in the databases you choose, with no intervention from the developers and no interruptions. Each change goes to a log table and, asynchronously, to a Git commit containing the updated script of the object. **The change is detected and logged inside SQL Server, not in the clients.** You will forget it is installed until the moment you need it.
 
-> Inside SQL Server and on disk everything is named `czSqlGit` (database, folder, trigger, login) — the short form of the same name.
-
 ## Why
 
 - **All the power of Git for your schemas.** History, diffs, tags, branches, blame: every object of every database, one file per object, with the standard Git tools you already use. You control the versions of your schemas the same way you control the rest of your source code.
@@ -25,9 +23,9 @@ It does not replace a deployment pipeline or a migrations tool. It sits undernea
 
 ```
  Developer ──ALTER PROCEDURE──▶ [AdventureWorks]
-                                    │ DDL trigger czSqlGit_SchemaAudit
+                                    │ DDL trigger czSQLServerGit_SchemaAudit
                                     ▼
-                         czSqlGit.dbo.RegisterChange
+                         czSQLServerGit.dbo.RegisterChange
                             │ INSERT dbo.SchemaLog
                             │ dbo.AsyncExecInvoke ──▶ Service Broker queue dbo.AsyncExecQueue
                             ▼                                   │ dbo.AsyncExecActivated
@@ -37,12 +35,12 @@ It does not replace a deployment pipeline or a migrations tool. It sits undernea
                                                                 │ mssql-scripter --include-objects dbo.uspGetOrders
                                                                 │ git commit --author="dev.maria" -m "AdventureWorks: dbo.uspGetOrders"
                                                                 ▼
-                                         C:\czSqlGit\AdventureWorks\dbo.uspGetOrders.StoredProcedure.sql
+                                         C:\czSQLServerGit\AdventureWorks\dbo.uspGetOrders.StoredProcedure.sql
 ```
 
 Two levels of recording:
 
-- **Every single change**: the utility database `czSqlGit` receives, from a DDL trigger in each monitored database, every schema change. It records it in `dbo.SchemaLog` (who, when, which statement, object definition) and queues in Service Broker the call to `save_one_object_changes.bat`, which regenerates only that object's script and commits it, **authored by the SQL Server login that made the change**. The developer never waits: the `ALTER` returns immediately and the commit happens in the background, one after another.
+- **Every single change**: the utility database `czSQLServerGit` receives, from a DDL trigger in each monitored database, every schema change. It records it in `dbo.SchemaLog` (who, when, which statement, object definition) and queues in Service Broker the call to `save_one_object_changes.bat`, which regenerates only that object's script and commits it, **authored by the SQL Server login that made the change**. The developer never waits: the `ALTER` returns immediately and the commit happens in the background, one after another.
 - **Full refresh**: `save_changes.bat` regenerates with mssql-scripter the script of every object of every database (one file per object), copies any other code to be versioned and commits whatever changed. Run it by hand the first time (initial commit) and then from the Task Scheduler, at least once a day: it picks up what the trigger does not capture (external files, databases without the trigger, uncovered events) and heals anything the asynchronous chain may have missed.
 
 ## What you get
@@ -70,7 +68,7 @@ scripts/
   save_changes.bat                 Full refresh of every database + commit
   save_one_object_changes.bat      Script of a single object + commit (invoked by the trigger)
 sql/
-  01_create_czSqlGit.sql           Utility database: tables, procedures and Service Broker
+  01_create_czSQLServerGit.sql           Utility database: tables, procedures and Service Broker
   02_schema_audit_trigger.sql      DDL trigger to be created in every database to version
   03_xp_cmdshell_proxy_account.sql Optional: proxy credential for xp_cmdshell
 docs/images/                       Screenshots
@@ -110,8 +108,8 @@ The real limits are platform, not version:
 Install Git, create the local repository folder and initialise it:
 
 ```bat
-mkdir C:\czSqlGit
-cd C:\czSqlGit
+mkdir C:\czSQLServerGit
+cd C:\czSQLServerGit
 git init
 ```
 
@@ -119,7 +117,7 @@ git init
 
 ### 2. Git client (optional)
 
-Install Fork (or any other client) with `C:\czSqlGit` as the default source folder:
+Install Fork (or any other client) with `C:\czSQLServerGit` as the default source folder:
 
 ![Fork setup](docs/images/fork_setup.png)
 
@@ -136,21 +134,21 @@ pip install mssql-scripter
 
 ### 4. SQL Server login
 
-Create a login (`czsqlgit` in the scripts) with permission to read definitions in every database to be versioned (`VIEW DEFINITION` plus `db_datareader` is enough for mssql-scripter).
+Create a login (`czsqlservergit` in the scripts) with permission to read definitions in every database to be versioned (`VIEW DEFINITION` plus `db_datareader` is enough for mssql-scripter).
 
 ### 5. Batch scripts
 
-Copy [`scripts/save_changes.bat`](scripts/save_changes.bat) and [`scripts/save_one_object_changes.bat`](scripts/save_one_object_changes.bat) to `C:\czSqlGit` and adjust the configuration block at the top of each one:
+Copy [`scripts/save_changes.bat`](scripts/save_changes.bat) and [`scripts/save_one_object_changes.bat`](scripts/save_one_object_changes.bat) to `C:\czSQLServerGit` and adjust the configuration block at the top of each one:
 
 ```bat
-SET REPO_DIR=C:\czSqlGit
+SET REPO_DIR=C:\czSQLServerGit
 SET SQL_SERVER=127.0.0.1
-SET SQL_USER=czsqlgit
+SET SQL_USER=czsqlservergit
 SET SQL_PASSWORD=<password>
 SET MSSQL_SCRIPTER=mssql-scripter
 SET GIT="C:\Program Files\Git\cmd\git.exe"
-SET GIT_USER_NAME=czSqlGit
-SET GIT_USER_EMAIL=czsqlgit@example.com
+SET GIT_USER_NAME=czSQLServerGit
+SET GIT_USER_EMAIL=czsqlservergit@example.com
 ```
 
 In `save_changes.bat`, add one block per database to be versioned:
@@ -173,29 +171,29 @@ Running `save_changes.bat` for the first time creates one folder per database wi
 
 ### 6. Scheduled task
 
-Schedule `save_changes.bat` in the Windows Task Scheduler to run at least once a day, under a user with permissions on `C:\czSqlGit`.
+Schedule `save_changes.bat` in the Windows Task Scheduler to run at least once a day, under a user with permissions on `C:\czSQLServerGit`.
 
-### 7. czSqlGit database
+### 7. czSQLServerGit database
 
-Run [`sql/01_create_czSqlGit.sql`](sql/01_create_czSqlGit.sql), preferably as `sa` so that it owns the database (the queue is activated with `EXECUTE AS OWNER`).
+Run [`sql/01_create_czSQLServerGit.sql`](sql/01_create_czSQLServerGit.sql), preferably as `sa` so that it owns the database (the queue is activated with `EXECUTE AS OWNER`).
 
-If the repository is not in `C:\czSqlGit`, adjust the path in `dbo.RegisterChange`. To ignore changes made by specific logins (ETL, replication, BI processes), uncomment and edit the exclusion line at the top of the same procedure.
+If the repository is not in `C:\czSQLServerGit`, adjust the path in `dbo.RegisterChange`. To ignore changes made by specific logins (ETL, replication, BI processes), uncomment and edit the exclusion line at the top of the same procedure.
 
 If running `xp_cmdshell` from Service Broker fails with permission errors (visible in the SQL Server event log or in `dbo.AsyncExecResults`), create the credential `##xp_cmdshell_proxy_account##` with [`sql/03_xp_cmdshell_proxy_account.sql`](sql/03_xp_cmdshell_proxy_account.sql): when it exists, `xp_cmdshell` uses it as its Windows security context.
 
 ### 8. Trigger in every database
 
-Run [`sql/02_schema_audit_trigger.sql`](sql/02_schema_audit_trigger.sql) in every database to be monitored. It creates the DDL trigger `czSqlGit_SchemaAudit` and, as a test, creates and drops a procedure `czSqlGit_Test`: two rows must appear in `czSqlGit.dbo.SchemaLog` and two commits in the repository.
+Run [`sql/02_schema_audit_trigger.sql`](sql/02_schema_audit_trigger.sql) in every database to be monitored. It creates the DDL trigger `czSQLServerGit_SchemaAudit` and, as a test, creates and drops a procedure `czSQLServerGit_Test`: two rows must appear in `czSQLServerGit.dbo.SchemaLog` and two commits in the repository.
 
 ## Querying the log
 
 ```sql
 SELECT Id, UserName, EventType, DatabaseName, SchemaName, ObjectName, ObjectType, CreatedAt, Command
-FROM czSqlGit.dbo.SchemaLog
+FROM czSQLServerGit.dbo.SchemaLog
 ORDER BY Id DESC
 ```
 
-Status of the asynchronous calls (timings and errors) is in `czSqlGit.dbo.AsyncExecResults`.
+Status of the asynchronous calls (timings and errors) is in `czSQLServerGit.dbo.AsyncExecResults`.
 
 ## Azure
 
@@ -209,7 +207,7 @@ The same idea works on Azure SQL Database and Azure SQL Managed Instance. What c
 | `sp_invoke_external_rest_endpoint` (HTTP calls from T-SQL) | ❌ | ✅ | ❌ |
 
 ```
-[Azure SQL DB / MI]  DDL trigger czSqlGit_SchemaAudit
+[Azure SQL DB / MI]  DDL trigger czSQLServerGit_SchemaAudit
                           │
                           ▼
                      dbo.SchemaLog  (+ Processed BIT DEFAULT 0)
@@ -232,7 +230,7 @@ The same idea works on Azure SQL Database and Azure SQL Managed Instance. What c
 - **No Git binary needed either.** The GitHub Contents API (`PUT /repos/{owner}/{repo}/contents/{path}`) or the Azure Repos Pushes API creates one commit per call, with the author of your choice.
 - **The full refresh needs nothing on the server**: a scheduled GitHub Actions / Azure DevOps pipeline running `SqlPackage /Action:Extract` or `Export-DbaScript` against the database and committing the result.
 
-## Objects in the czSqlGit database
+## Objects in the czSQLServerGit database
 
 | Object | Description |
 |---|---|

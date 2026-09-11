@@ -15,7 +15,7 @@
 USE [AdventureWorks]
 GO
 
-CREATE TRIGGER [czSqlGit_SchemaAudit] ON DATABASE
+CREATE TRIGGER [czSQLServerGit_SchemaAudit] ON DATABASE
     FOR
     CREATE_PROCEDURE, ALTER_PROCEDURE, DROP_PROCEDURE,
     CREATE_INDEX,     ALTER_INDEX,     DROP_INDEX,
@@ -36,27 +36,27 @@ BEGIN
     DECLARE @objectDefinition NVARCHAR(MAX)
     SELECT @objectDefinition = OBJECT_DEFINITION(OBJECT_ID(QUOTENAME(@schemaName) + '.' + QUOTENAME(@objectName)))
 
-    EXEC [czSqlGit].[dbo].[RegisterChange] @eventData, @objectDefinition
+    EXEC [czSQLServerGit].[dbo].[RegisterChange] @eventData, @objectDefinition
 
     SET NOCOUNT OFF
 END
 GO
 
-ENABLE TRIGGER [czSqlGit_SchemaAudit] ON DATABASE
+ENABLE TRIGGER [czSQLServerGit_SchemaAudit] ON DATABASE
 GO
 
 -- To remove it:
--- DROP TRIGGER [czSqlGit_SchemaAudit] ON DATABASE
+-- DROP TRIGGER [czSQLServerGit_SchemaAudit] ON DATABASE
 
 
 ------------------------------------------------------------------------
 -- Quick test: create and drop a procedure to check that the trigger
--- records both events in czSqlGit.dbo.SchemaLog and that two new
+-- records both events in czSQLServerGit.dbo.SchemaLog and that two new
 -- commits show up in the Git repository.
 ------------------------------------------------------------------------
-CREATE PROCEDURE [dbo].[czSqlGit_Test] AS
+CREATE PROCEDURE [dbo].[czSQLServerGit_Test] AS
     SELECT 1
 GO
 
-DROP PROCEDURE [dbo].[czSqlGit_Test]
+DROP PROCEDURE [dbo].[czSQLServerGit_Test]
 GO

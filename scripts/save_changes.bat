@@ -18,15 +18,15 @@ REM  from the Windows Task Scheduler.
 REM ============================================================================
 
 REM ---- Configuration ---------------------------------------------------------
-SET REPO_DIR=C:\czSqlGit
+SET REPO_DIR=C:\czSQLServerGit
 SET SQL_SERVER=127.0.0.1
-SET SQL_USER=czsqlgit
+SET SQL_USER=czsqlservergit
 SET SQL_PASSWORD=<password>
 REM Full path to mssql-scripter.bat if the Python Scripts folder is not in PATH
 SET MSSQL_SCRIPTER=mssql-scripter
 SET GIT="C:\Program Files\Git\cmd\git.exe"
-SET GIT_USER_NAME=czSqlGit
-SET GIT_USER_EMAIL=czsqlgit@example.com
+SET GIT_USER_NAME=czSQLServerGit
+SET GIT_USER_EMAIL=czsqlservergit@example.com
 SET LOG=save_changes.log
 REM ----------------------------------------------------------------------------
 

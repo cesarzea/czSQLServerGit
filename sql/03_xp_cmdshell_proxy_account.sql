@@ -9,7 +9,7 @@
 ------------------------------------------------------------------------
 -- OPTIONAL. Only needed if running xp_cmdshell from Service Broker
 -- fails with permission errors (visible in the SQL Server event log or
--- in the table czSqlGit.dbo.AsyncExecResults).
+-- in the table czSQLServerGit.dbo.AsyncExecResults).
 --
 -- If the credential ##xp_cmdshell_proxy_account## exists, xp_cmdshell
 -- uses it as the Windows security context to run under. Use an account

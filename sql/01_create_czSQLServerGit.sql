@@ -13,14 +13,14 @@
 -- Run under the 'sa' security context so that 'sa' owns the database.
 ------------------------------------------------------------------------
 
-IF DB_ID('czSqlGit') IS NULL
-    CREATE DATABASE [czSqlGit]
+IF DB_ID('czSQLServerGit') IS NULL
+    CREATE DATABASE [czSQLServerGit]
 GO
 
-ALTER DATABASE [czSqlGit] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE
+ALTER DATABASE [czSQLServerGit] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE
 GO
 
-USE [czSqlGit]
+USE [czSQLServerGit]
 GO
 
 SET ANSI_NULLS ON
@@ -269,9 +269,9 @@ BEGIN
     -- IF @userName IN ('etl_service', 'replication_user') RETURN
 
     -- Command that regenerates the object script and commits it to Git as the
-    -- login that made the change. Adjust the path if the repository is not in C:\czSqlGit
+    -- login that made the change. Adjust the path if the repository is not in C:\czSQLServerGit
     DECLARE @gitCommand NVARCHAR(MAX)
-    SET @gitCommand = 'EXEC master..xp_cmdshell ''C:\czSqlGit\save_one_object_changes.bat ' + @databaseName + ' ' + @schemaName + ' ' + @objectName + ' "' + @userName + '"'''
+    SET @gitCommand = 'EXEC master..xp_cmdshell ''C:\czSQLServerGit\save_one_object_changes.bat ' + @databaseName + ' ' + @schemaName + ' ' + @objectName + ' "' + @userName + '"'''
 
     INSERT INTO [SchemaLog] ([UserName], [EventType], [DatabaseName], [SchemaName], [ObjectName], [ObjectType], [CreatedAt], [ObjectDefinition], [Command], [EventData], [GitCommand])
     VALUES (@userName, @eventType, @databaseName, @schemaName, @objectName, @objectType, @createdAt, @objectDefinition, @command, @eventData, @gitCommand)
