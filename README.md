@@ -25,22 +25,7 @@ It does not replace a deployment pipeline or a migrations tool. It sits undernea
 
 ## How it works
 
-```
- Developer ──ALTER PROCEDURE──▶ [AdventureWorks]
-                                    │ DDL trigger czSQLServerGit_SchemaAudit
-                                    ▼
-                         czSQLServerGit.dbo.RegisterChange
-                            │ INSERT dbo.SchemaLog
-                            │ dbo.AsyncExecInvoke ──▶ Service Broker queue dbo.AsyncExecQueue
-                            ▼                                   │ dbo.AsyncExecActivated
-                   (the ALTER returns                           │ (single reader: no concurrency)
-                    immediately)                                ▼
-                                    xp_cmdshell save_one_object_changes.bat AdventureWorks dbo uspGetOrders "dev.maria"
-                                                                │ mssql-scripter --include-objects dbo.uspGetOrders
-                                                                │ git commit --author="dev.maria" -m "AdventureWorks: dbo.uspGetOrders"
-                                                                ▼
-                                         C:\czSQLServerGit\AdventureWorks\dbo.uspGetOrders.StoredProcedure.sql
-```
+![How it works](docs/images/architecture_flow.png)
 
 Two levels of recording:
 
