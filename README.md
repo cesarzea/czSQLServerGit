@@ -250,6 +250,10 @@ The same idea works on Azure SQL Database and Azure SQL Managed Instance. What c
 - Exclusion table (objects or schemas not to be versioned).
 - Verify tags and branches.
 
+## Author
+
+[César Zea](https://www.cesarzea.com) — https://www.cesarzea.com
+
 ## License
 
-[MIT](LICENSE) — Copyright (c) 2020-2026 César Zea. If you use it, keep the copyright notice; if you improve it, a pull request is very welcome.
+[MIT](LICENSE) — Copyright (c) 2020-2026 [César Zea](https://www.cesarzea.com). If you use it, keep the copyright notice; if you improve it, a pull request is very welcome.
