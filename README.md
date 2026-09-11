@@ -4,17 +4,21 @@
 
 **Automatic Git version control for SQL Server schemas. Simple, reliable and under your control.**
 
+**No more unknown schema changes.** Every schema change recorded: what changed, when, and who did it.
+
 How many times have you overwritten or deleted code in SQL Server and needed to undo the change? How many times have you needed the history of every change made to your code or your schema? How many times has a database changed its behaviour and nobody could tell what changed, when, or who did it?
 
 czSQLServerGit records, on the server itself, every creation, modification and deletion of objects in the databases you choose, with no intervention from the developers and no interruptions. Each change goes to a log table and, asynchronously, to a Git commit containing the updated script of the object. **The change is detected and logged inside SQL Server, not in the clients.** You will forget it is installed until the moment you need it.
 
 ## Why
 
-- **All the power of Git for your schemas.** History, diffs, tags, branches, blame: every object of every database, one file per object, with the standard Git tools you already use. You control the versions of your schemas the same way you control the rest of your source code.
-- **Forget about losing code again.** You won't comment out chunks of code so as not to lose them, and you can drop obsolete objects without fear: everything that ran on the server since the day you installed it is in the log and in Git, with who and when.
+- **No more unknown schema changes.** Every `CREATE`, `ALTER` and `DROP` on every table, view, procedure, function, index and trigger is recorded the moment it happens, with the login that ran it, the exact statement and the full definition of the object. Nothing to remember, nothing to enforce: if it ran on the server, it is in the log and in Git.
+- **Normalize and secure your development process.** All the power of Git for your schemas: history, diffs, tags, branches, blame. Every object of every database, one file per object, with the standard Git tools you already use. You control the versions of your schemas the same way you control the rest of your source code.
+- **Secured schema migration scripts.** `git diff` between two versions of a database is the exact list of every object that changed, with its old and new definition. The migration script comes from that diff, not from memory or from a schema compare run weeks later. Tag each release and the diff between two tags is the release.
+- **Control your production environments.** Production servers are rarely as isolated from developers as they should be, and hotfixes happen. With czSQLServerGit every one of them is recorded, attributed and reversible, and a change in behaviour can be traced to a change in schema in seconds.
+- **Forget about losing code again.** You won't comment out chunks of code so as not to lose them, and you can drop obsolete objects without fear: everything that ran on the server since the day you installed it is in the log and in Git.
+- **Built for volatile environments.** Development servers where several people change procedures and tables all day long. Integration servers. BI and data warehouse environments that replicate structure changes from source systems, where a column renamed upstream lands in staging hours later and breaks the ETL.
 - **You will trust it because you will understand it.** Nothing to install that you don't understand: a small utility database, a DDL trigger, two batch files, Git and a script generator from Microsoft. Standard SQL Server features, nothing else.
-- **Built for volatile environments.** Development servers where several people change procedures and tables all day long. Integration servers. BI and data warehouse environments that replicate structure changes from source systems, where a column renamed upstream lands in staging hours later and breaks the ETL. Even production servers that are not completely isolated from the developers.
-- **Migration scripts write themselves.** `git diff` between two versions of a database is the exact list of every object that changed, with its old and new definition. No more schema compares run weeks later, no more relying on memory.
 - **Easily adaptable.** Exclude changes made by specific logins (ETL, replication, BI processes), version some databases in real time and others once a day, add any other files to the same repository.
 
 It does not replace a deployment pipeline or a migrations tool. It sits underneath them, capturing everything they don't: the hotfix done directly in SSMS at 3 am, the `ALTER` run by the vendor, the change replicated from the source system.
