@@ -1,12 +1,16 @@
 ------------------------------------------------------------------------
--- czSqlGit
+-- czSqlGit - Automatic Git version control for SQL Server schemas
+-- https://github.com/cesarzea/czSqlGit
+--
+-- Copyright (c) 2020-2026 César Zea - https://www.cesarzea.com
+-- Licensed under the MIT License. See LICENSE.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- Utility database that records every schema change the moment it happens
 -- and sends it asynchronously (Service Broker) to Git.
 --
 -- Run under the 'sa' security context so that 'sa' owns the database.
---
--- Copyright (c) 2020-2026 César Zea (https://github.com/cesarzea/czSqlGit)
--- Licensed under the MIT License. See LICENSE.
 ------------------------------------------------------------------------
 
 IF DB_ID('czSqlGit') IS NULL

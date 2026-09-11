@@ -1,5 +1,13 @@
 @echo off
 REM ============================================================================
+REM  czSqlGit - Automatic Git version control for SQL Server schemas
+REM  https://github.com/cesarzea/czSqlGit
+REM
+REM  Copyright (c) 2020-2026 Cesar Zea - https://www.cesarzea.com
+REM  Licensed under the MIT License. See LICENSE.
+REM ============================================================================
+
+REM ============================================================================
 REM  save_one_object_changes.bat  <database> <schema> <object> ["login"]
 REM  Regenerates the script of ONE object and commits it to Git, authored
 REM  by the SQL Server login that made the change (if given).

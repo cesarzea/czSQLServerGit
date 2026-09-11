@@ -1,4 +1,12 @@
 ------------------------------------------------------------------------
+-- czSqlGit - Automatic Git version control for SQL Server schemas
+-- https://github.com/cesarzea/czSqlGit
+--
+-- Copyright (c) 2020-2026 César Zea - https://www.cesarzea.com
+-- Licensed under the MIT License. See LICENSE.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- OPTIONAL. Only needed if running xp_cmdshell from Service Broker
 -- fails with permission errors (visible in the SQL Server event log or
 -- in the table czSqlGit.dbo.AsyncExecResults).

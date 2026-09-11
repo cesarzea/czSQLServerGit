@@ -1,4 +1,12 @@
 ------------------------------------------------------------------------
+-- czSqlGit - Automatic Git version control for SQL Server schemas
+-- https://github.com/cesarzea/czSqlGit
+--
+-- Copyright (c) 2020-2026 César Zea - https://www.cesarzea.com
+-- Licensed under the MIT License. See LICENSE.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
 -- DDL trigger to be created in EVERY database whose schema changes
 -- must be recorded.
 --
