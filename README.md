@@ -1,12 +1,14 @@
-<p align="center"><img src="docs/images/logo.png" width="260" alt="czSqlGit"></p>
+<p align="center"><img src="docs/images/logo.png" width="260" alt="czSQLServerGit"></p>
 
-# czSqlGit
+# czSQLServerGit
 
 **Automatic Git version control for SQL Server schemas. Simple, reliable and under your control.**
 
 How many times have you overwritten or deleted code in SQL Server and needed to undo the change? How many times have you needed the history of every change made to your code or your schema? How many times has a database changed its behaviour and nobody could tell what changed, when, or who did it?
 
-czSqlGit records, on the server itself, every creation, modification and deletion of objects in the databases you choose, with no intervention from the developers and no interruptions. Each change goes to a log table and, asynchronously, to a Git commit containing the updated script of the object. **The change is detected and logged inside SQL Server, not in the clients.** You will forget it is installed until the moment you need it.
+czSQLServerGit records, on the server itself, every creation, modification and deletion of objects in the databases you choose, with no intervention from the developers and no interruptions. Each change goes to a log table and, asynchronously, to a Git commit containing the updated script of the object. **The change is detected and logged inside SQL Server, not in the clients.** You will forget it is installed until the moment you need it.
+
+> Inside SQL Server and on disk everything is named `czSqlGit` (database, folder, trigger, login) — the short form of the same name.
 
 ## Why
 
