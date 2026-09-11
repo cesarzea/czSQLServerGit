@@ -1,0 +1,12 @@
+# Original documentation this repository was extracted from, and previous versions
+*.docx
+~$*
+/old/
+
+# IDE
+.idea/
+.junie/
+*.iml
+
+# OS
+.DS_Store
